@@ -9,7 +9,17 @@ import * as WALLET from '../actions/constants/wallet';
 import * as CONNECT from '../actions/constants/TrezorConnect';
 
 
-import type { Action, RouterLocationState, TrezorDevice } from '~/flowtype';
+import type { 
+    State as ReducersState, 
+    Action, 
+    RouterLocationState, 
+    TrezorDevice,
+    Account,
+    Coin,
+    Discovery,
+    Token,
+    Web3Instance
+} from '~/flowtype';
 
 type State = {
     ready: boolean;
@@ -18,6 +28,16 @@ type State = {
     initialParams: ?RouterLocationState;
     initialPathname: ?string;
     disconnectRequest: ?TrezorDevice;
+
+    // references to other reducers
+    selectedDevice: ?TrezorDevice;
+    selectedNetwork: ?Coin;
+    selectedAccount: ?Account;
+    // account specific
+    discovery: ?Discovery;
+    tokens: Array<Token>;
+    web3instance: ?Web3Instance;
+
 }
 
 const initialState: State = {
@@ -26,11 +46,26 @@ const initialState: State = {
     dropdownOpened: false,
     initialParams: null,
     initialPathname: null,
-    disconnectRequest: null
+    disconnectRequest: null,
+
+    selectedDevice: null,
+    selectedNetwork: null,
+    selectedAccount: null,
+    
+    discovery: null,
+    tokens: [],
+    web3instance: null
 };
 
 export default function wallet(state: State = initialState, action: Action): State {
     switch(action.type) {
+
+        case LOCATION_CHANGE : 
+        case MODAL.CLOSE : 
+            return {
+                ...state,
+                dropdownOpened: false
+            }
 
         case WALLET.SET_INITIAL_URL :
             return {
@@ -57,13 +92,6 @@ export default function wallet(state: State = initialState, action: Action): Sta
                 dropdownOpened: action.opened
             }
 
-        case LOCATION_CHANGE : 
-        case MODAL.CLOSE : 
-            return {
-                ...state,
-                dropdownOpened: false
-            }
-
         case CONNECT.DISCONNECT_REQUEST :
             return {
                 ...state,
@@ -78,6 +106,32 @@ export default function wallet(state: State = initialState, action: Action): Sta
                 }
             }
             return state;
+
+        
+
+        case WALLET.SET_SELECTED_DEVICE :
+            return {
+                ...state,
+                selectedDevice: action.device
+            }
+            
+        case WALLET.SET_SELECTED_NETWORK :
+            return {
+                ...state,
+                selectedNetwork: action.network
+            }
+
+        case WALLET.SET_SELECTED_ACCOUNT :
+            return {
+                ...state,
+                selectedAccount: action.account
+            }
+
+        case WALLET.SET_DISCOVERY :
+            return {
+                ...state,
+                discovery: action.discovery
+            }
 
         default:
             return state;

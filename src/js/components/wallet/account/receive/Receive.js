@@ -21,24 +21,27 @@ export default class Receive extends SelectedAccount<Props> {
 const _render = (props: Props, state: ComponentState): React$Element<string> => {
 
     const {
-        device,
-        account,
-        discovery,
         deviceStatusNotification
     } = state;
+
+    const {
+        selectedDevice,
+        selectedAccount,
+        discovery,
+    } = props.wallet;
 
     const {
         addressVerified,
         addressUnverified,
     } = props.receive;
 
-    if (!device || !account || !discovery) return <section></section>;
+    if (!selectedDevice || !selectedAccount || !discovery) return <section></section>;
 
     let qrCode = null;
-    let address = `${account.address.substring(0, 20)}...`;
+    let address = `${selectedAccount.address.substring(0, 20)}...`;
     let className = 'address hidden';
     let button = (
-        <button disabled={ device.connected && !discovery.completed } onClick={ event => props.showAddress(account.addressPath) }>
+        <button disabled={ selectedDevice.connected && !discovery.completed } onClick={ event => props.showAddress(selectedAccount.addressPath) }>
             <span>Show full address</span>
         </button>
     );
@@ -51,23 +54,23 @@ const _render = (props: Props, state: ComponentState): React$Element<string> => 
                 fgColor="#000000"
                 level="Q"
                 style={{ width: 256 }}
-                value={ account.address }
+                value={ selectedAccount.address }
                 />
         );
-        address = account.address;
+        address = selectedAccount.address;
         className = addressUnverified ? 'address unverified' : 'address';
 
         const tooltip = addressUnverified ?
-            (<div>Unverified address.<br/>{ device.connected && device.available ? 'Show on TREZOR' : 'Connect your TREZOR to verify it.' }</div>)
+            (<div>Unverified address.<br/>{ selectedDevice.connected && selectedDevice.available ? 'Show on TREZOR' : 'Connect your TREZOR to verify it.' }</div>)
             :
-            (<div>{ device.connected ? 'Show on TREZOR' : 'Connect your TREZOR to verify address.' }</div>);
+            (<div>{ selectedDevice.connected ? 'Show on TREZOR' : 'Connect your TREZOR to verify address.' }</div>);
 
         button = (
             <Tooltip
                 arrowContent={<div className="rc-tooltip-arrow-inner"></div>}
                 overlay={ tooltip }
                 placement="bottomRight">
-                <button className="white" onClick={ event => props.showAddress(account.addressPath) }>
+                <button className="white" onClick={ event => props.showAddress(selectedAccount.addressPath) }>
                     <span></span>
                 </button>
             </Tooltip>

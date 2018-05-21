@@ -35,7 +35,8 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
         devices: state.connect.devices,
         accounts: state.accounts,
         discovery: state.discovery,
-        receive: state.receive
+        receive: state.receive,
+        wallet: state.wallet
     };
 }
 

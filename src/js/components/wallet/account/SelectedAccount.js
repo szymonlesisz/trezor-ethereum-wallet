@@ -17,6 +17,7 @@ export type StateProps = {
     devices: $PropertyType<$ElementType<State, 'connect'>, 'devices'>,
     discovery: $ElementType<State, 'discovery'>,
     accounts: $ElementType<State, 'accounts'>,
+    wallet: $ElementType<State, 'wallet'>,
 }
 
 export type DispatchProps = {
@@ -28,18 +29,12 @@ export type DispatchProps = {
 export type Props = StateProps & DispatchProps;
 
 export type ComponentState = {
-    device: ?TrezorDevice;
-    account: ?Account;
-    discovery: ?Discovery;
     deviceStatusNotification: ?React$Element<typeof Notification>;
 }
 
 export default class SelectedAccount<P> extends Component<Props & P, ComponentState> {
 
     state: ComponentState = {
-        device: null,
-        account: null,
-        discovery: null,
         deviceStatusNotification: null
     };
 
@@ -55,18 +50,20 @@ export default class SelectedAccount<P> extends Component<Props & P, ComponentSt
         const accountState = props.selectedAccount;
         if (!accountState) return;
 
-        const device = findDevice(props.devices, accountState.deviceId, accountState.deviceState, accountState.deviceInstance);
-        if (!device) return;
-        const discovery = props.discovery.find(d => d.deviceState === device.state && d.network === accountState.network);
-        // if (!discovery) return;
-        const account = props.accounts.find(a => a.deviceState === accountState.deviceState && a.index === accountState.index && a.network === accountState.network);
+        const {
+            selectedDevice,
+            selectedAccount,
+            discovery 
+        } = props.wallet;
+
+        if (!selectedDevice) return;
 
         let deviceStatusNotification: ?React$Element<typeof Notification> = null;
-        if (account) {
-            if (!device.connected) {
-                deviceStatusNotification = <Notification className="info" title={ `Device ${ device.instanceLabel } is disconnected` } />;
-            } else if (!device.available) {
-                deviceStatusNotification = <Notification className="info" title={ `Device ${ device.instanceLabel } is unavailable` } message="Change passphrase settings to use this device" />;
+        if (selectedAccount) {
+            if (!selectedDevice.connected) {
+                deviceStatusNotification = <Notification className="info" title={ `Device ${ selectedDevice.instanceLabel } is disconnected` } />;
+            } else if (!selectedDevice.available) {
+                deviceStatusNotification = <Notification className="info" title={ `Device ${ selectedDevice.instanceLabel } is unavailable` } message="Change passphrase settings to use this device" />;
             }
         }
 
@@ -75,9 +72,6 @@ export default class SelectedAccount<P> extends Component<Props & P, ComponentSt
         }
 
         this.setState({
-            device,
-            discovery,
-            account,
             deviceStatusNotification
         })
     }
@@ -92,27 +86,24 @@ export default class SelectedAccount<P> extends Component<Props & P, ComponentSt
         const props = this.props;
         const accountState = props.selectedAccount;
 
-        if (!accountState) {
-            return (<section><Notification className="info" title="Loading device..." /></section>);
-        }
-
         const {
-            device,
-            account,
-            discovery
-        } = this.state;
+            selectedDevice,
+            selectedAccount,
+            discovery 
+        } = props.wallet;
         
-        if (!device) {
-            return (<section><Notification className="warning" title={ `Device with state ${accountState.deviceState} not found` } /></section>);
+        if (!selectedDevice) {
+            return (<section><Notification className="warning" title={ `Loading device...` } /></section>);
+            //return (<section><Notification className="warning" title={ `Device with state ${accountState.deviceState} not found` } /></section>);
         }
 
         // account not found. checking why...
-        if (!account) {
+        if (!selectedAccount) {
             if (!discovery || discovery.waitingForDevice) {
                 
-                if (device.connected) {
+                if (selectedDevice.connected) {
                     // case 1: device is connected but discovery not started yet (probably waiting for auth)
-                    if (device.available) {
+                    if (selectedDevice.available) {
                         return (
                             <section>
                                 <Notification className="info" title="Loading accounts..." />
@@ -124,7 +115,7 @@ export default class SelectedAccount<P> extends Component<Props & P, ComponentSt
                             <section>
                                 <Notification 
                                     className="info" 
-                                    title={ `Device ${ device.instanceLabel } is unavailable` } 
+                                    title={ `Device ${ selectedDevice.instanceLabel } is unavailable` } 
                                     message="Change passphrase settings to use this device"
                                      />
                             </section>
@@ -136,7 +127,7 @@ export default class SelectedAccount<P> extends Component<Props & P, ComponentSt
                         <section>
                             <Notification 
                                 className="info" 
-                                title={ `Device ${ device.instanceLabel } is disconnected` } 
+                                title={ `Device ${ selectedDevice.instanceLabel } is disconnected` } 
                                 message="Connect device to load accounts"
                                 />
                         </section>

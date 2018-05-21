@@ -40,7 +40,8 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
         pending: state.pending,
         sendForm: state.sendForm,
         fiat: state.fiat,
-        localStorage: state.localStorage
+        localStorage: state.localStorage,
+        wallet: state.wallet
     };
 }
 

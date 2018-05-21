@@ -22,17 +22,22 @@ export default class Send extends SelectedAccount<Props> {
 const _render = (props: Props, state: ComponentState): React$Element<string> => {
 
     const {
-        device,
-        account,
-        discovery,
         deviceStatusNotification
     } = state;
-    const selectedAccount = props.selectedAccount;
 
-    if (!device || !account || !discovery || !selectedAccount) return <section></section>;
+    const {
+        selectedDevice,
+        selectedAccount,
+        discovery,
+    } = props.wallet;
 
-    const tokens = findAccountTokens(props.tokens, account);
-    const { network } = selectedAccount;
+
+    const selectedAccountLegacy = props.selectedAccount;
+
+    if (!selectedDevice || !selectedAccount || !discovery || !selectedAccountLegacy) return <section></section>;
+
+    const tokens = findAccountTokens(props.tokens, selectedAccount);
+    const { network } = selectedAccountLegacy;
 
     const { 
         address,
@@ -61,7 +66,7 @@ const _render = (props: Props, state: ComponentState): React$Element<string> => 
         onSend,
     } = props.sendFormActions;
 
-    const selectedCoin = selectedAccount.coin;
+    const selectedCoin = selectedAccountLegacy.coin;
     const fiatRate = props.fiat.find(f => f.network === network);
 
     const tokensSelectData = tokens.map(t => {
@@ -95,10 +100,10 @@ const _render = (props: Props, state: ComponentState): React$Element<string> => 
         buttonLabel += ` ${total} ${ selectedCoin.symbol }`;
     }
 
-    if (!device.connected){
+    if (!selectedDevice.connected){
         buttonLabel = 'Device is not connected';
         buttonDisabled = true;
-    } else if (!device.available) {
+    } else if (!selectedDevice.available) {
         buttonLabel = 'Device is unavailable';
         buttonDisabled = true;
     } else if (!discovery.completed) {
@@ -186,7 +191,7 @@ const _render = (props: Props, state: ComponentState): React$Element<string> => 
             <PendingTransactions 
                 pending={ props.pending }
                 tokens={ props.tokens }
-                account={ account }
+                account={ selectedAccount }
                 selectedCoin={ selectedCoin } />
     
         </section>

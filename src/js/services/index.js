@@ -7,6 +7,7 @@ import LocalStorageService from './LocalStorageService';
 import SessionStorageService from './SessionStorageService';
 import CoinmarketcapService from './CoinmarketcapService';
 import TrezorConnectService from './TrezorConnectService';
+import WalletService from './WalletService';
 
 export default [
     LogService,
@@ -15,4 +16,5 @@ export default [
     SessionStorageService,
     TrezorConnectService,
     CoinmarketcapService,
+    WalletService
 ];

@@ -43,6 +43,7 @@ const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: St
         summary: state.summary,
         fiat: state.fiat,
         localStorage: state.localStorage,
+        wallet: state.wallet
     };
 }
 

@@ -113,9 +113,18 @@ export type Action =
 
 export type State = ReducersState;
 
+// reexport reduces types
+export type { Coin } from '~/js/reducers/LocalStorageReducer';
+export type { Account } from '~/js/reducers/AccountsReducer';
+export type { Discovery } from '~/js/reducers/DiscoveryReducer';
+export type { Token } from '~/js/reducers/TokensReducer';
+export type { Web3Instance } from '~/js/reducers/Web3Reducer';
 export type Accounts = $ElementType<State, 'accounts'>;
+export type DevicesState = $ElementType<State, 'devices'>;
 export type LocalStorage = $ElementType<State, 'localStorage'>;
 export type Config = $PropertyType<$ElementType<State, 'localStorage'>, 'config'>;
+
+// redux
 
 export type Dispatch = ReduxDispatch<State, Action>;
 export type MiddlewareDispatch = ReduxPlainDispatch<Action>;

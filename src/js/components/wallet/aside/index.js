@@ -19,6 +19,7 @@ type OwnProps = {
 }
 
 type StateProps = {
+    devices: $ElementType<State, 'devices'>,
     connect: $ElementType<State, 'connect'>,
     accounts: $ElementType<State, 'accounts'>,
     router: $ElementType<State, 'router'>,
@@ -42,6 +43,7 @@ export type Props = StateProps & DispatchProps;
 
 const mapStateToProps: MapStateToProps<State, OwnProps, StateProps> = (state: State, own: OwnProps): StateProps => {
     return {
+        devices: state.devices,
         connect: state.connect,
         accounts: state.accounts,
         router: state.router,

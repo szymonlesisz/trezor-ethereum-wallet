@@ -30,11 +30,14 @@ export default class Summary extends SelectedAccount<Props> {
 const _render = (props: Props, state: ComponentState): React$Element<string> => {
 
     const {
-        device,
-        account,
+        //device,
+        //account,
         deviceStatusNotification
     } = state;
     const selectedAccount = props.selectedAccount;
+
+    const device = props.wallet.selectedDevice;
+    const account = props.wallet.selectedAccount;
 
     if (!device || !account || !selectedAccount) return <section></section>;
 
