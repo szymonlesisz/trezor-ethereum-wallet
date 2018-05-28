@@ -3,6 +3,7 @@
 
 import * as CONNECT from '../actions/constants/TrezorConnect';
 import * as ACCOUNT from '../actions/constants/account';
+import * as SEND from '../actions/constants/send';
 
 import type { Action, TrezorDevice } from '~/flowtype';
 import type { 
@@ -108,6 +109,14 @@ export default (state: State = initialState, action: Action): State => {
 
         case ACCOUNT.FROM_STORAGE :
             return action.payload;
+
+
+        //case SEND.TX_COMPLETE :
+            // add pending amount to account
+        //    return state;
+
+        //case PENDING.TX_RESOLVED :
+        //case PENDING.TX_NOT_FOUND :
 
         default:
             return state;

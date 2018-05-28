@@ -21,6 +21,9 @@ export type NotificationAction = {
         id?: string;
         devicePath?: string
     }
+} | {
+    type: typeof NOTIFICATION.EXPAND,
+    value: string;
 }
 
 export const close = (payload: any = {}): Action => {
@@ -30,6 +33,12 @@ export const close = (payload: any = {}): Action => {
     }
 }
 
+export const expand = (value: string): Action => {
+    return {
+        type: NOTIFICATION.EXPAND,
+        value
+    }
+}
 
 // called from RouterService
 export const clear = (currentParams: RouterLocationState, requestedParams: RouterLocationState): AsyncAction => {
@@ -37,7 +46,7 @@ export const clear = (currentParams: RouterLocationState, requestedParams: Route
         // if route has been changed from device view into something else (like other device, settings...) 
         // try to remove all Notifications which are linked to previous device (they are not cancelable by user)
         if (currentParams.device !== requestedParams.device || currentParams.deviceInstance !== requestedParams.deviceInstance) {
-            const entries = getState().notifications.filter(entry => typeof entry.devicePath === 'string');
+            const entries = getState().notifications.global.filter(entry => typeof entry.devicePath === 'string');
             entries.forEach(entry => {
                 if (typeof entry.devicePath === 'string') {
                     dispatch({

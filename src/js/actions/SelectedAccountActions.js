@@ -4,6 +4,7 @@
 import { LOCATION_CHANGE } from 'react-router-redux';
 import * as ACCOUNT from './constants/account';
 import * as SEND from './constants/send';
+import * as NOTIFICATION from './constants/notification';
 
 import * as SendFormActions from './SendFormActions';
 import * as SessionStorageActions from './SessionStorageActions';
@@ -84,17 +85,92 @@ export const updateSelectedValues = (prevState: State, action: Action): AsyncAct
                     type: ACCOUNT.UPDATE_SELECTED_ACCOUNT,
                     payload,
                 });
+
+                // check add account notif
+
             }
 
             if (locationChange) {
 
                 if (prevLocation) {
+
+                    if (prevLocation.state.network !== location.state.network) {
+                        // network changed remove
+                        dispatch({
+                            type: NOTIFICATION.CLOSE,
+                            payload: {
+                                id: 'network'
+                            }
+                        })
+                    }
+
                     // save form data to session storage
                     // TODO: move to state.sendForm on change event
                     if (prevLocation.state.send) {
                         SessionStorageActions.save(prevState.router.location.pathname, state.sendForm);
                     }
+
                 }
+                
+                if (location.state.network === 'ethereum-classic') {
+                    dispatch({
+                        type: NOTIFICATION.ADD,
+                        payload: {
+                            type: "warning",
+                            id: 'network',
+                            title: location.state.network || 'NON',
+                            message: 'Some warning about this network',
+                            cancelable: false
+                        }
+                    });
+                }
+
+                if (location.state.network === 'ropsten') {
+                    dispatch({
+                        type: NOTIFICATION.ADD,
+                        payload: {
+                            type: "error",
+                            id: 'network',
+                            title: 'Backend is down',
+                            message: 'Some network error',
+                            cancelable: false
+                        }
+                    });
+                }
+
+                dispatch({
+                    type: NOTIFICATION.ADD,
+                    payload: {
+                        type: "warning",
+          
+                        title: location.state.network || 'NON',
+                        message: 'Some warning about this network',
+                        cancelable: true
+                    }
+                });
+                dispatch({
+                    type: NOTIFICATION.ADD,
+                    payload: {
+                        type: "error",
+       
+                        title: location.state.network || 'NON',
+                        message: 'Some warning about this network',
+                        cancelable: true
+                    }
+                });
+                dispatch({
+                    type: NOTIFICATION.ADD,
+                    payload: {
+                        type: "info",
+                      
+                        title: location.state.network || 'NON',
+                        message: 'Some warning about this network',
+                        cancelable: true
+                    }
+                });
+                
+
+                
 
                 dispatch( dispose() );
                 if (location.state.send) {
