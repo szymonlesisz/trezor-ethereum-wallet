@@ -22,7 +22,7 @@ import { findToken } from '../reducers/TokensReducer';
 import { findDevice } from '../reducers/utils';
 import * as stateUtils from '../reducers/utils';
 
-import type { 
+import type {
     PendingTx,
     Dispatch,
     GetState,
@@ -148,7 +148,7 @@ export const calculateMaxAmount = (balance: BigNumber, gasPrice: string, gasLimi
     } catch (error) {
         return '0';
     }
-    
+
 }
 
 export const calculate = (prevProps: Props, props: Props) => {
@@ -166,12 +166,12 @@ export const calculate = (prevProps: Props, props: Props) => {
     // account balance
     // token balance
     // gasLimit, gasPrice changed
-    
-    // const shouldRecalculateAmount = 
+
+    // const shouldRecalculateAmount =
     //     (prevProps.selectedAccount.account !== account)
     //     || (prevProps.)
-    
-    
+
+
     if (state.setMax) {
 
         const pendingAmount: BigNumber = stateUtils.getPendingAmount(pending, state.currency, isToken);
@@ -203,10 +203,10 @@ export const getFeeLevels = (symbol: string, gasPrice: BigNumber | string, gasLi
     const quarter: BigNumber = price.dividedBy(4);
     const high: string = price.plus(quarter.times(2)).toString(10);
     const low: string = price.minus(quarter.times(2)).toString(10);
-    
+
     const customLevel: FeeLevel = selected && selected.value === 'Custom' ? {
         value: 'Custom',
-        gasPrice: selected.gasPrice, 
+        gasPrice: selected.gasPrice,
         // label: `${ calculateFee(gasPrice, gasLimit) } ${ symbol }`
         label: `${ calculateFee(selected.gasPrice, gasLimit) } ${ symbol }`
     } : {
@@ -216,17 +216,17 @@ export const getFeeLevels = (symbol: string, gasPrice: BigNumber | string, gasLi
     }
 
     return [
-        { 
+        {
             value: 'High',
             gasPrice: high,
             label: `${ calculateFee(high, gasLimit) } ${ symbol }`
         },
-        { 
+        {
             value: 'Normal',
             gasPrice: gasPrice.toString(),
             label: `${ calculateFee(price.toString(10), gasLimit) } ${ symbol }`
         },
-        { 
+        {
             value: 'Low',
             gasPrice: low,
             label: `${ calculateFee(low, gasLimit) } ${ symbol }`
@@ -413,7 +413,7 @@ export const validation = (props: Props): void => {
                         errors.amount = 'Amount is too low';
                     }
                 }
-                
+
             } else {
                 decimalRegExp = new RegExp('^(0|0\\.([0-9]{0,18})?|[1-9][0-9]*\\.?([0-9]{0,18})?|\\.[0-9]{0,18})$');
                 if (!state.amount.match(decimalRegExp)) {
@@ -424,7 +424,7 @@ export const validation = (props: Props): void => {
             }
         }
     }
-        
+
     // valid gas limit
     if (state.touched.gasLimit) {
         if (state.gasLimit.length < 1) {
@@ -644,7 +644,7 @@ export const updateFeeLevels = (): ThunkAction => {
             // leave gas limit as it was
             gasLimit = currentState.gasLimit;
         }
-        
+
         const feeLevels: Array<FeeLevel> = getFeeLevels(network.symbol, currentState.recommendedGasPrice, gasLimit, currentState.selectedFeeLevel);
         const selectedFeeLevel: ?FeeLevel = feeLevels.find(f => f.value === currentState.selectedFeeLevel.value);
         if (!selectedFeeLevel) return;
@@ -666,7 +666,7 @@ export const updateFeeLevels = (): ThunkAction => {
 
 export const onGasPriceChange = (gasPrice: string): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
-        
+
         const currentState: State = getState().sendForm;
         const isToken: boolean = currentState.currency !== currentState.networkSymbol;
 
@@ -695,7 +695,7 @@ export const onGasPriceChange = (gasPrice: string): ThunkAction => {
 
 export const onGasLimitChange = (gasLimit: string, updateFeeLevels: boolean = false): ThunkAction => {
     return (dispatch: Dispatch, getState: GetState): void => {
- 
+
         const currentState: State = getState().sendForm;
         const isToken: boolean = currentState.currency !== currentState.networkSymbol;
 
@@ -813,7 +813,7 @@ const estimateGasPrice = (): AsyncAction => {
             dispatch( onGasLimitChange(gasLimit.toString()) );
         }
     }
-    
+
 }
 
 export const onSend = (): AsyncAction => {
@@ -826,7 +826,7 @@ export const onSend = (): AsyncAction => {
             pending
         } = getState().selectedAccount;
         if (!account || !web3 || !network) return;
-        
+
         const currentState: State = getState().sendForm;
 
         const isToken: boolean = currentState.currency !== currentState.networkSymbol;
@@ -843,7 +843,7 @@ export const onSend = (): AsyncAction => {
 
             const contract = web3.erc20.at(token.address);
             const amountValue: string = new BigNumber(currentState.amount).times( Math.pow(10, token.decimals) ).toString(10);
-            
+
             data = contract.transfer.getData(currentState.address, amountValue, {
                 from: account.address,
                 gasLimit: currentState.gasLimit,
@@ -884,13 +884,18 @@ export const onSend = (): AsyncAction => {
             },
             useEmptyPassphrase: !selected.instance,
             path: txData.address_n,
-            nonce: strip(txData.nonce),
-            gasPrice: strip(txData.gasPrice),
-            gasLimit: strip(txData.gasLimit),
-            to: strip(txData.to),
-            value: strip(txData.value),
-            data: strip(txData.data),
-            chainId: txData.chainId
+            transaction: {
+                to: strip(txData.to),
+                value: strip(txData.value),
+                gasPrice: strip(txData.gasPrice),
+                gasLimit: strip(txData.gasLimit),
+                nonce: strip(txData.nonce),
+                data: strip(txData.data),
+                chainId: txData.chainId,
+                r: txData.r,
+                s: txData.s,
+                v: txData.v,
+            },
         });
 
         if (!signedTransaction || !signedTransaction.success) {
@@ -912,7 +917,7 @@ export const onSend = (): AsyncAction => {
         txData.s = '0x' + signedTransaction.payload.s;
         txData.v = w3.toHex(signedTransaction.payload.v);
 
-        
+
 
         try {
             const tx = new EthereumjsTx(txData);
