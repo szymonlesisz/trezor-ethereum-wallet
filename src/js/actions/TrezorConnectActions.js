@@ -23,7 +23,7 @@ import type {
     UiMessageType
 } from 'trezor-connect';
 
-import type { 
+import type {
     Dispatch,
     GetState,
     Action,
@@ -83,7 +83,7 @@ export type TrezorConnectAction = {
 
 export const init = (): AsyncAction => {
     return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
-        // set listeners 
+        // set listeners
         TrezorConnect.on(DEVICE_EVENT, (event: DeviceMessage): void => {
             // post event to reducers
             const type: DeviceMessageType = event.type; // assert flow type
@@ -114,14 +114,12 @@ export const init = (): AsyncAction => {
         try {
             await TrezorConnect.init({
                 transportReconnect: true,
-                // connectSrc: 'https://localhost:8088/',
-                connectSrc: 'https://sisyfos.trezor.io/',
                 debug: false,
                 popup: false,
                 webusb: true,
                 pendingTransportEvent: (getState().devices.length < 1)
             });
-        } catch (error) { 
+        } catch (error) {
             // dispatch({
             //     type: CONNECT.INITIALIZATION_ERROR,
             //     error
@@ -171,7 +169,7 @@ export const postInit = (): ThunkAction => {
                     if (!initialParams.hasOwnProperty("network") && initialPathname !== getState().router.location.pathname) {
                         // dispatch( push(initialPathname) );
                     } else {
-                        
+
                     }
                 }
             }
@@ -277,12 +275,12 @@ export const switchToFirstAvailableDevice = (): AsyncAction => {
 export const getSelectedDeviceState = (): AsyncAction => {
     return async (dispatch: Dispatch, getState: GetState): Promise<void> => {
         const selected = getState().wallet.selectedDevice;
-        if (selected 
+        if (selected
             && selected.connected
             && (selected.features && !selected.features.bootloader_mode && selected.features.initialized)
             && !selected.state) {
 
-            const response = await TrezorConnect.getDeviceState({ 
+            const response = await TrezorConnect.getDeviceState({
                 device: {
                     path: selected.path,
                     instance: selected.instance,
@@ -375,7 +373,7 @@ export function acquire(): AsyncAction {
             type: CONNECT.START_ACQUIRING,
         })
 
-        const response = await TrezorConnect.getFeatures({ 
+        const response = await TrezorConnect.getFeatures({
             device: {
                 path: selected.path,
             },
