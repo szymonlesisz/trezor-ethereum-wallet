@@ -2615,7 +2615,7 @@ eventemitter3@^3.0.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-3.1.0.tgz#090b4d6cdbd645ed10bf750d4b5407942d7ba163"
 
-events@^1.0.0:
+events@^1.0.0, events@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/events/-/events-1.1.1.tgz#9ebdb7635ad099c70dcc4c2a1f5004288e8bd924"
 
@@ -6980,9 +6980,14 @@ tough-cookie@~2.3.0:
   dependencies:
     punycode "^1.4.1"
 
-trezor-connect@5.0.13:
-  version "5.0.13"
-  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-5.0.13.tgz#2feee3d6644f8c3effd445b60ed80e7d5731469a"
+trezor-connect@^5.0.27:
+  version "5.0.27"
+  resolved "https://registry.yarnpkg.com/trezor-connect/-/trezor-connect-5.0.27.tgz#f1324c2b5f774d84bde2d4b386661a3ae1f9fadc"
+  dependencies:
+    babel-polyfill "^6.26.0"
+    babel-runtime "^6.26.0"
+    events "^1.1.1"
+    whatwg-fetch "^2.0.4"
 
 trim-newlines@^1.0.0:
   version "1.0.0"
@@ -7469,6 +7474,10 @@ websocket-extensions@>=0.1.1:
 whatwg-fetch@>=0.10.0, whatwg-fetch@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/whatwg-fetch/-/whatwg-fetch-2.0.3.tgz#9c84ec2dcf68187ff00bc64e1274b442176e1c84"
+
+whatwg-fetch@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/whatwg-fetch/-/whatwg-fetch-2.0.4.tgz#dde6a5df315f9d39991aa17621853d720b85566f"
 
 whet.extend@~0.9.9:
   version "0.9.9"
