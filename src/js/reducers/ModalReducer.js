@@ -56,9 +56,10 @@ export default function modal(state: State = initialState, action: Action): Stat
             };
 
         case DEVICE.CHANGED :
-            if (state.opened && action.device.path === state.device.path && action.device.isUsedElsewhere) {
-                return initialState
-            }
+        if (state.opened && action.device.path === state.device.path && action.device.isUsedElsewhere) {
+            return initialState
+        }
+
             return state;
 
         case DEVICE.DISCONNECT :
@@ -68,7 +69,7 @@ export default function modal(state: State = initialState, action: Action): Stat
             return state;
 
         // case DEVICE.CONNECT :
-        // case DEVICE.CONNECT_UNACQUIRED : 
+        // case DEVICE.CONNECT_UNACQUIRED :
         //     if (state.opened && state.windowType === CONNECT.TRY_TO_FORGET) {
         //         return {
         //             ...initialState,
@@ -92,10 +93,10 @@ export default function modal(state: State = initialState, action: Action): Stat
                 device: action.payload.device,
                 windowType: action.payload.code
             }
-        
+
         case UI.CLOSE_UI_WINDOW :
         case MODAL.CLOSE :
-        
+
         case CONNECT.FORGET :
         case CONNECT.FORGET_SINGLE :
         case CONNECT.REMEMBER :

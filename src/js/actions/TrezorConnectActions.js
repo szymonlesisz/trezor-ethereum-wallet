@@ -332,7 +332,7 @@ export const deviceDisconnect = (device: Device): AsyncAction => {
                 dispatch( DiscoveryActions.stop(selected) );
             }
 
-            const instances = getState().devices.filter(d => d.features && d.state && !d.remember && d.features.device_id === device.features.device_id);
+            const instances = getState().devices.filter(d => d.features && d.state && !d.remember && device.features && d.features.device_id === device.features.device_id);
             if (instances.length > 0) {
                 dispatch({
                     type: CONNECT.REMEMBER_REQUEST,
