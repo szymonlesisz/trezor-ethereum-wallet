@@ -67,7 +67,7 @@ const addDevice = (state: State, device: Device): State => {
         }
         otherDevices = state.filter(d => affectedDevices.indexOf(d) === -1);
     } else {
-        affectedDevices = state.filter(d => d.features && d.features.device_id === device.features.device_id);
+        affectedDevices = state.filter(d => d.features && device.features && d.features.device_id === device.features.device_id);
         const unacquiredDevices = state.filter(d => d.path.length > 0 && d.path === device.path);
         otherDevices = state.filter(d => affectedDevices.indexOf(d) < 0 && unacquiredDevices.indexOf(d) < 0);
     }
@@ -86,7 +86,7 @@ const addDevice = (state: State, device: Device): State => {
         ts: new Date().getTime(),
     }
 
-    if (affectedDevices.length > 0 ) {
+    if (affectedDevices.length > 0) {
         // check if freshly added device has different "passphrase_protection" settings
 
         // let hasDifferentPassphraseSettings: boolean = false;
@@ -133,7 +133,7 @@ const duplicate = (state: State, device: TrezorDevice): State => {
 
     if (!device.features) return state;
 
-    const newState: State = [ ...state ];
+    const newState: State = [...state];
 
     const instance: number = getNewInstance(state, device);
 
@@ -143,7 +143,7 @@ const duplicate = (state: State, device: TrezorDevice): State => {
         remember: false,
         state: null,
         // instance, (instance is already part of device - added in modal)
-        instanceLabel: `${device.label} (${ device.instanceName || instance })`,
+        instanceLabel: `${device.label} (${device.instanceName || instance})`,
         ts: new Date().getTime(),
     }
     newState.push(newDevice);
@@ -188,7 +188,7 @@ const authDevice = (state: State, device: TrezorDevice, deviceState: string): St
 
 // Transform JSON form local storage into State
 const devicesFromStorage = (devices: Array<TrezorDevice>): State => {
-    return devices.map( (d: TrezorDevice) => {
+    return devices.map((d: TrezorDevice) => {
         return {
             ...d,
             connected: false,
@@ -211,7 +211,7 @@ const forgetDevice = (state: State, device: TrezorDevice): State => {
 // Remove single device reference from State
 const forgetSingleDevice = (state: State, device: TrezorDevice): State => {
     // remove only one instance (called from Aside button)
-    const newState: State = [ ...state ];
+    const newState: State = [...state];
     newState.splice(newState.indexOf(device), 1);
     return newState;
 }
@@ -223,7 +223,7 @@ const disconnectDevice = (state: State, device: Device): State => {
 
     if (affectedDevices.length > 0) {
         const acquiredDevices = affectedDevices.filter(d => !d.unacquired && d.state);
-        return otherDevices.concat( acquiredDevices.map(d => {
+        return otherDevices.concat(acquiredDevices.map(d => {
             d.connected = false;
             d.available = false;
             d.isUsedElsewhere = false;
@@ -239,7 +239,7 @@ const disconnectDevice = (state: State, device: Device): State => {
 const onSelectedDevice = (state: State, device: ?TrezorDevice): State => {
     if (device) {
         const otherDevices: Array<TrezorDevice> = state.filter(d => d !== device);
-        return otherDevices.concat([ { ...device, ts: new Date().getTime() } ]);
+        return otherDevices.concat([{ ...device, ts: new Date().getTime() }]);
     }
     return state;
 }
@@ -248,36 +248,35 @@ export default function devices(state: State = initialState, action: Action): St
 
     switch (action.type) {
 
-        case CONNECT.DEVICE_FROM_STORAGE :
+        case CONNECT.DEVICE_FROM_STORAGE:
             return devicesFromStorage(action.payload);
-        
-        case CONNECT.DUPLICATE :
+
+        case CONNECT.DUPLICATE:
             return duplicate(state, action.device);
 
-        case CONNECT.AUTH_DEVICE :
+        case CONNECT.AUTH_DEVICE:
             return authDevice(state, action.device, action.state);
 
-        case CONNECT.REMEMBER :
-            return changeDevice(state, { ...action.device, path: '', remember: true } );
-    
-        case CONNECT.FORGET :
+        case CONNECT.REMEMBER:
+            return changeDevice(state, { ...action.device, path: '', remember: true });
+
+        case CONNECT.FORGET:
             return forgetDevice(state, action.device);
-        case CONNECT.FORGET_SINGLE :
+        case CONNECT.FORGET_SINGLE:
             return forgetSingleDevice(state, action.device);
 
-        case DEVICE.CONNECT :
-        case DEVICE.CONNECT_UNACQUIRED :
+        case DEVICE.CONNECT:
+        case DEVICE.CONNECT_UNACQUIRED:
             return addDevice(state, action.device);
 
-        case DEVICE.CHANGED :
-            return changeDevice(state, { ...action.device, connected: true, available: true }); 
-            // TODO: check if available will propagate to unavailable
+        case DEVICE.CHANGED:
+            return changeDevice(state, { ...action.device, connected: true, available: true });
+        // TODO: check if available will propagate to unavailable
 
-        case DEVICE.DISCONNECT :
-        case DEVICE.DISCONNECT_UNACQUIRED :
+        case DEVICE.DISCONNECT:
             return disconnectDevice(state, action.device);
 
-        case WALLET.SET_SELECTED_DEVICE : 
+        case WALLET.SET_SELECTED_DEVICE:
             return onSelectedDevice(state, action.device);
 
         default:
@@ -291,13 +290,13 @@ export default function devices(state: State = initialState, action: Action): St
 export const getNewInstance = (devices: State, device: Device | TrezorDevice): number => {
 
     const affectedDevices: State = devices.filter(d => d.features && device.features && d.features.device_id === device.features.device_id)
-    .sort((a, b) => {
-        if (!a.instance) {
-            return -1;
-        } else {
-            return !b.instance || a.instance > b.instance ? 1 : -1;
-        }
-    });
+        .sort((a, b) => {
+            if (!a.instance) {
+                return -1;
+            } else {
+                return !b.instance || a.instance > b.instance ? 1 : -1;
+            }
+        });
 
     const instance: number = affectedDevices.reduce((inst, dev) => {
         return dev.instance ? dev.instance + 1 : inst + 1;
