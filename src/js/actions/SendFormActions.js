@@ -913,8 +913,8 @@ export const onSend = (): AsyncAction => {
             return;
         }
 
-        txData.r = '0x' + signedTransaction.payload.r;
-        txData.s = '0x' + signedTransaction.payload.s;
+        txData.r = signedTransaction.payload.r;
+        txData.s = signedTransaction.payload.s;
         txData.v = w3.toHex(signedTransaction.payload.v);
 
 
