@@ -14,7 +14,6 @@ import { resolveAfter } from '../utils/promiseUtils';
 
 import type {
     Device,
-    ResponseMessage,
     DeviceMessage,
     UiMessage,
     TransportMessage,
@@ -440,5 +439,12 @@ export function addAccount(): ThunkAction {
         const selected = getState().wallet.selectedDevice;
         if (!selected) return;
         dispatch( DiscoveryActions.start(selected, getState().router.location.state.network, true) ); // TODO: network nicer
+    }
+}
+
+export const disconnectRequest = (device: TrezorDevice): Action => {
+    return {
+        type: CONNECT.DISCONNECT_REQUEST,
+        device: device
     }
 }

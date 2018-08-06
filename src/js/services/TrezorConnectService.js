@@ -64,10 +64,7 @@ const TrezorConnectService: Middleware = (api: MiddlewareAPI) => (next: Middlewa
     } else if (action.type === CONNECT.FORGET_SINGLE) {
         if (api.getState().devices.length < 1 && action.device.connected) {
             // prompt disconnect device info in LandingPage
-            api.dispatch({
-                type: CONNECT.DISCONNECT_REQUEST,
-                device: action.device
-            });
+            api.dispatch( TrezorConnectActions.disconnectRequest(action.device) );
             api.dispatch( push('/') );
         } else {
             api.dispatch( TrezorConnectActions.switchToFirstAvailableDevice() );
