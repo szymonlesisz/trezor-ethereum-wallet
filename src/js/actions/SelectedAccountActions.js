@@ -82,15 +82,15 @@ export const updateSelectedValues = (prevState: State, action: Action): AsyncAct
 
             let needUpdate: boolean = false;
             Object.keys(payload).forEach((key) => {
-                if (Array.isArray(payload[key])) {
-                    if (Array.isArray(state.selectedAccount[key]) && payload[key].length !== state.selectedAccount[key].length) {
-                        needUpdate = true;
-                    }
-                } else {
+                // if (Array.isArray(payload[key]) && Array.isArray(state.selectedAccount[key])) {
+                //     if (payload[key].length === state.selectedAccount[key].length) {
+                //         needUpdate = true;
+                //     }
+                // } else {
                     if (payload[key] !== state.selectedAccount[key]) {
                         needUpdate = true;
                     }
-                }
+                //}
             })
 
             if (needUpdate) {
