@@ -1,14 +1,14 @@
 {
-    "name": "trezor-connect-react-boilerplate",
-    "version": "1.0.0",
+    "name": "trezor-wallet",
+    "version": "0.0.1",
     "author": "TREZOR <info@trezor.io>",
     "description": "",
     "repository": {
         "type": "git",
-        "url": "https://github.com/szymonlesisz/trezor-connect-react-boilerplate.git"
+        "url": "https://github.com/satoshilabs/trezor-wallet.git"
     },
     "bugs": {
-        "url": "https://github.com/szymonlesisz/trezor-connect-react-boilerplate/issues"
+        "url": "https://github.com/satoshilabs/trezor-wallet/issues"
     },
     "bin": {
         "flow": "./node_modules/flow-bin"
